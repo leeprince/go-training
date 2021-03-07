@@ -14,7 +14,7 @@ type Cal struct {
 
 /*
 反射三大原则：
-	原则一：通过接口类型调用 reflect.ValueOf 反射方法可以转换成反射对象
+	原则一：通过接口类型调用 reflect.ValueOf 等反射方法可以转换成反射对象
 	原则二：反射对象通过 反射对象.interface() 可以转换成接口类型
 	原则三：通过 reflect.Value 反射结构体或者 reflect.* 等其他反射方法可以对反射对象的原值修改
  */
