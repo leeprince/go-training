@@ -1,7 +1,6 @@
 package ctrlconsole
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -37,14 +36,14 @@ func (data *Cal) GetReflectOfCaculete() {
 	}
 	// 通过reflect.Call调用反射对象获取实现OperationFactory接口的具体方法的结构体
 	funcStruct := relValue.Call(arg)[0]
-	fmt.Printf("valueOper.Call. %v %T", funcStruct, funcStruct)
+	// fmt.Printf("valueOper.Call. %v %T", funcStruct, funcStruct)
 
 	/* 反射原则二
 	通过类型断言出实现OperationFactory接口的具体方法的结构体
 	interfaceFunc = OperatorAdd ｜ OperatorSub ｜ OperatorMul ｜OperatorDiv
 	 */
 	interfaceFunc := funcStruct.Interface().(OperationFactory)
-	fmt.Printf("valueOper.Call. %v %T", interfaceFunc, interfaceFunc)
+	// fmt.Printf("valueOper.Call. %v %T", interfaceFunc, interfaceFunc)
 
 	// 执行结构体实现OperationFactory接口的方法
 	data.Result = interfaceFunc.Calculate()

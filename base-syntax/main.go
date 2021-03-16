@@ -7,12 +7,12 @@ func main()  {
 	// unit.Pointer()
 	// unit.Error()
 	// unit.Reflect()
-	unit.Func()
+	// unit.Func()
 	// unit.Json()
 	// unit.Arr()
 	// unit.Slice()
 	// unit.Map()
-	// unit.Interface()
+	unit.Interface()
 }
 
 
