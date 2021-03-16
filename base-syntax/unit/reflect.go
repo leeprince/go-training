@@ -63,7 +63,7 @@ func Reflect() {
 		反射原则三：通过 reflect.Value 等其他反射方法可以对反射对象的原值修改
 	*/
 	/* 设置结构体数据的原值 */
-	rvv := reflect.ValueOf(&i)
+	rvv := reflect.ValueOf(&i) // 必须是引用类型（变量指针）
 	vField := rvv.Elem().FieldByName("Name") // 获取指定字段。注意：（golang 的大小写：public： 公共的、外部包可访问。proteced: 仅同包可访问）结构体不同包首字母必须大写，相同包此处的字段名也必须是大写
 	vField.SetString("prince01")
 	fmt.Println("通过 reflect.Value 等其他反射方法可以对反射对象的原值修改结果：", i)

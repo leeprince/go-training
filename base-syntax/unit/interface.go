@@ -55,8 +55,10 @@ func Interface() {
 	只能对interface{}类型的变量使用类型断言（类型查询： 变量.(类型)）
 	 */
 	var ii interface{}
-	ii = 1 // 断言 Animal 失败
-	ii = dog{3, "dog01"} // 断言 Animal 失败
+	ii = 1 // 断言 int
+	// ii = 2147483640 // 断言 int
+	// ii = 1.0 // 断言 float64
+	// ii = dog{3, "dog01"} // 断言 Animal
 	// 方法一
 	v, ok := ii.(Animal)
 	if !ok {
@@ -70,6 +72,14 @@ func Interface() {
 		fmt.Printf("断言 type string: %v \n", t)
 	case int:
 		fmt.Printf("断言 type int: %v  \n", t)
+	case int16:
+		fmt.Printf("断言 type int16: %v  \n", t)
+	case int32:
+		fmt.Printf("断言 type int32: %v  \n", t)
+	case float32:
+		fmt.Printf("断言 type float32: %v  \n", t)
+	case float64:
+		fmt.Printf("断言 type float64: %v  \n", t)
 	default:
 		fmt.Printf("断言 type .switch-default: %v  \n", t)
 	}
