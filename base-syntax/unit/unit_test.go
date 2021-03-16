@@ -18,3 +18,5 @@ func TestGetUserInfo(t *testing.T) {
 func TestGetUserName(t *testing.T) {
 	fmt.Println(GetUserName(1))
 }
+
+
