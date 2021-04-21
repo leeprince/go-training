@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-training/calculating-factory/ctrlconsole"
+	"calculating-factory/ctrlconsole"
 )
 
 func main()  {
