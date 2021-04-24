@@ -20,21 +20,27 @@ func Reflect() {
 		原则三：通过 reflect.Value 等其他反射方法可以对反射对象的原值修改
 	*/
 	// i := 10 // 整型
+	
 	// i := "10" // 字符串
+	
 	// i := [2]int{1, 2} // 数组
+	
 	// i := []int{1, 2} // 切片
+	
 	/*var i map[string]string // 集合
 	i = map[string]string{"name": "prince", "like": "golang"}*/
 	/*i := make(map[string]string)  // 集合
 	i["name"] = "prince"
 	i["like"]  = "golang"*/
 	// i := map[string]string{"name": "prince", "like": "golang"} // 集合[推荐]
+	
 	/*i := reflectTestStruct{} // 结构体
 	i.name = "prince"
 	i.like = "golang"*/
 	// var i = reflectTestStruct{Name: "prince", Like: "golang"} // 结构体
-	// i := reflectTestStruct{Name: "prince", Like: "golang"} // 结构体
-	i := reflectTestStruct{"prince", "golang"} // 结构体[推荐]
+	// i := reflectTestStruct{"prince", "golang"} // 结构体
+	i := reflectTestStruct{Name: "prince", Like: "golang"} // 结构体[推荐]
+	
 	/*
 		反射第一原则：通过接口类型调用 reflect.Value 等反射方法可以转换成反射对象
 	*/
