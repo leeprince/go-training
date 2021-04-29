@@ -4,6 +4,12 @@
 3. 运行方法：cd 到包名路径下，运行 $ go test [-v]
 	可选参数：-v 输出运行详情
 */
+/*
+源码调试可使用包：delve
+
+delve 工具：https://github.com/derekparker/delve
+
+*/
 package unit
 
 import (
@@ -18,5 +24,3 @@ func TestGetUserInfo(t *testing.T) {
 func TestGetUserName(t *testing.T) {
 	fmt.Println(GetUserName(1))
 }
-
-
