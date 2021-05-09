@@ -74,7 +74,7 @@ func main() {
 	wg.Add(1) // 登记协程
 	go fileWg()
 	
-	wg.Wait() // 等待登记的协程执行完再执行后续的程序
+	wg.Wait() // 等待登记的协程执行完再取消堵塞，执行后续的程序
 	
 	endTimeGoWaitGroup := time.Now().Unix()
 	fmt.Printf("main 结束时间戳：%d; 总运行时间(单位：秒)：%d \n", endTimeGoWaitGroup, endTimeGoWaitGroup-startTimeGoWaitGroup)

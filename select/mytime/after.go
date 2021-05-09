@@ -1,5 +1,0 @@
-package time
-
-func TimeAfter()  {
-	
-}

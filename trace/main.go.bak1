@@ -1,0 +1,79 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"runtime/trace"
+	"sync"
+)
+
+var wg sync.WaitGroup
+
+/* 通用方法
+生成 *.out 文件
+*/
+func recordTrace() {
+	f, err := os.Create("./trace.out")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	
+	err = trace.Start(f)
+	if err != nil {
+		panic(err)
+	}
+	defer trace.Stop()
+}
+
+func main() {
+	// 创建trace文件
+	// recordTrace()
+	f, err := os.Create("./trace.out")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	
+	err = trace.Start(f)
+	if err != nil {
+		panic(err)
+	}
+	defer trace.Stop()
+	
+	ch := make(chan string)     // 存储数据
+	done := make(chan []string) // 启动阻塞切换协程的执行
+	data := make([]string, 0)
+	wg.Add(4)
+	go redis(ch) // defer wg.Done() // => 1
+	go mysql(ch)
+	go mysql(ch)
+	go es(ch)
+	go func(data []string, ch chan string, done chan []string) {
+		for {
+			if d, ok := <-ch; ok { // 只有在协程通道关闭的时候才能跳出循环
+				data = append(data, d)
+			} else {
+				break
+			}
+		}
+		fmt.Println("data:", data)
+		done <- data
+	}(data, ch, done)
+	wg.Wait() // 在添加的协程个数，执行完之后就会取消阻塞
+	close(ch) // 这是关闭ch通道
+	
+	fmt.Println("<-done", <-done) // 是不是 需要在 done 通道有信息的时候才执行
+}
+func redis(ch chan<- string) {
+	defer wg.Done()
+	ch <- "redis"
+}
+func mysql(ch chan<- string) {
+	defer wg.Done()
+	ch <- "mysql"
+}
+func es(ch chan<- string) {
+	defer wg.Done()
+	ch <- "es"
+}

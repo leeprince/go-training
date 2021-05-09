@@ -166,17 +166,17 @@ func recvfChOnly(ch <-chan string)  {
 	fmt.Println("recvChOnly:", <-ch)
 }
 
-func send(ch chan string) {
+func send(ch chan<- string) {
 	s1 := "p100001"
 	ch <- s1
 	fmt.Println("通道发送值<-：", s1)
 }
 
-func recv(ch chan string) {
+func recv(ch <-chan string) {
 	fmt.Println("<-通道接收值：", <-ch)
 }
 
-func goSend(ch chan string) {
+func goSend(ch chan<- string) {
 	defer wg.Done()
 	
 	s1 := "p00001"
@@ -184,7 +184,7 @@ func goSend(ch chan string) {
 	fmt.Println("通道发送值<-：", s1)
 }
 
-func goRecv(ch chan string) {
+func goRecv(ch <-chan string) {
 	defer wg.Done()
 	fmt.Println("<-通道接收值：", <-ch)
 }

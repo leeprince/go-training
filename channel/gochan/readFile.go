@@ -12,9 +12,8 @@ import (
 var wg sync.WaitGroup
 
 func ReadMulFile()  {
-	ch := make(chan string)
-	data := make([]string, 0)
-	done := make(chan []string)
+	ch := make(chan string) // 存储数据
+	done := make(chan []string) // 启动阻塞, 达到自动切换协程
 	
 	wg.Add(1)
 	go file(ch)
@@ -23,18 +22,16 @@ func ReadMulFile()  {
 	wg.Add(1)
 	go redis(ch)
 	
-	
-	go readData(ch, data, done)
-	
+	go readData(ch, done)
 	
 	wg.Wait()
 	close(ch)
 	
-	fmt.Println("data: ", data)
 	fmt.Println("done: ", <-done)
 }
 
-func readData(ch <-chan string, data []string, done chan<- []string)  {
+func readData(ch <-chan string, done chan<- []string)  {
+	data := make([]string, 0) // 临时存储数据
 	for {
 		if dt, bool := <-ch; bool {
 			data = append(data, dt)

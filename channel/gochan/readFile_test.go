@@ -2,6 +2,6 @@ package gochan
 
 import "testing"
 
-func _TestReadMulFile(t *testing.T) {
+func TestReadMulFile(t *testing.T) {
 	ReadMulFile()
 }

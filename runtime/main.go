@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"sync"
 	"time"
 )
 
@@ -19,32 +20,79 @@ runtime
 	GOMAXPROCS() // 设置最大的可同时使用的 CPU 核数
  */
 
+/** Go语言中的操作系统线程和goroutine的关系:
+1. 一个操作系统线程对应用户态多个goroutine。
+2. go程序可以同时使用多个操作系统线程。
+3. goroutine和OS线程是多对多的关系，即m:n。
+ */
+
 /** 协程多核调度-GPM模型
 G: 协程
 P: 处理器（协程调度器）
 M: 线程
  */
+
+var wg sync.WaitGroup // sync.WaitGroup 解决 goroutine main 主协程退出问题
 func main() {
+	startTime := time.Now().UnixNano() / 1e3
+	fmt.Println("main 开始时间戳：", startTime)
 	
 	// runtime.GOMAXPROCS(1) // 方便演示runtime.Gosched()后的效果
 	runtime.GOMAXPROCS(2)
 	
+	wg.Add(1)
 	go A()
+	wg.Add(1)
 	go B()
 	
-	time.Sleep(time.Second * 1) // sleep 解决 goroutine main 主协程退出问题
+	wg.Add(1)
+	go A1()
+	wg.Add(1)
+	go B1()
+	wg.Add(1)
+	go C1()
+	
+	wg.Wait() // 等待登记的协程执行完再执行后续的程序
+	
+	
+	// time.Sleep(time.Second * 1) // sleep 解决 goroutine main 主协程退出问题
+	
+	endTime := time.Now().UnixNano() / 1e3
+	fmt.Printf("main 结束时间戳：%d; 总运行时间(单位：微秒)：%d \n", endTime, endTime-startTime)
+	
 }
 
 func A()  {
+	defer wg.Done()
 	fmt.Println("A >")
-	runtime.Gosched()
 	fmt.Println("A > >")
 }
 
 func B()  {
+	defer wg.Done()
 	fmt.Println("B >")
-	runtime.Goexit()
 	fmt.Println("B > >")
+}
+
+func A1()  {
+	defer wg.Done()
+	fmt.Println("A1 Gosched>")
+	runtime.Gosched()
+	fmt.Println("A1 Gosched> >")
+}
+
+func B1()  {
+	defer wg.Done()
+	fmt.Println("B1 Gosched>")
+	runtime.Gosched()
+	fmt.Println("B1 Gosched> >")
+}
+
+func C1()  {
+	defer wg.Done()
+	fmt.Println("C1 Gosched>")
+	runtime.Goexit()
+	fmt.Println("C1 Gosched> >")
 }
 
 

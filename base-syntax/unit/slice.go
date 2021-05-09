@@ -6,6 +6,8 @@ type sliceData struct {
 	s []int
 }
 
+// var s1 []string = make([]string, 1) // true
+
 func Slice()  {
 	data := []int{0, 1, 2, 3, 4, 10: 8}
 	fmt.Println(data)
