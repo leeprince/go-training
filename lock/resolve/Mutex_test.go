@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMutex(t *testing.T) {
+func testMutex(t *testing.T) {
 	path := "./"
 	file := "TestMutex.txt"
 	data := "prince"

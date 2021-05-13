@@ -17,10 +17,10 @@ var rwmutex sync.RWMutex
 func RWMutex()  {
 	path := "./"
 	file := "f.txt"
-	data := "prince"
+	data := "prince\r\n"
 	wg.Add(5)
 	for i := 1; i <= 5; i++ {
-		// go operWMutex(path, file, data) // 写锁解决竞态问题
+		//go operWMutex(path, file, data) // 写锁解决竞态问题
 		go operWRMutex(path, file, data) // 读写锁解决竞态问题
 	}
 	wg.Wait()
@@ -50,8 +50,14 @@ func operWMutex(path, file, data string) {
 func operWRMutex(path, file, data string) {
 	defer wg.Done()
 	
-	// TODO: [错误] - prince_add_todo
-	rwmutex.RLock() // 加读锁
+	/* 错误使用
+	还是出现了竞态问题：
+		原因：
+			1. 两个A/B协程同时获取读锁，并且同时取获取写锁
+			2. 其中A协程优先获取到写锁，另外B协程等待A写锁释放
+			3. A写锁释放后，B协程再次写入数据。最终出现了竞态问题
+	 */
+	/*rwmutex.RLock() // 加读锁
 	rdata, _ := utils.ReadFileOfString(path+file)
 	rwmutex.RUnlock() // 解读锁
 	if rdata != "" {
@@ -67,9 +73,13 @@ func operWRMutex(path, file, data string) {
 		fmt.Println("WrtiteFile successfuly")
 		
 		rwmutex.Unlock() // 解写锁
-	}
-	
-	/*rwmutex.Lock() // 加写锁
+	}*/
+
+	/* 正确使用
+	无竞态问题.
+		需要注意一点：下面方法中读锁一定要加上, 防止有A协程写锁释放后去写入内容到文件的过程中，B协程获取写锁读去文件内容为空然后继续写入。
+	 */
+	rwmutex.Lock() // 加写锁
 	rdata, _ := utils.ReadFileOfString(path+file)
 	rwmutex.Unlock() // 解写锁
 	if rdata != "" {
@@ -85,7 +95,7 @@ func operWRMutex(path, file, data string) {
 		fmt.Println("WrtiteFile successfuly")
 		
 		rwmutex.RUnlock() // 解读锁
-	}*/
+	}
 	
 	
 }

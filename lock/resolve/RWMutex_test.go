@@ -1,6 +1,7 @@
 package resolve
 
 import (
+	"fmt"
 	"github.com/leeprince/utils"
 	"testing"
 )
@@ -8,24 +9,29 @@ import (
 func TestRWMutex(t *testing.T) {
 	path := "./"
 	file := "TestRWMutex.txt"
-	data := "prince"
+	data := "prince\r\n"
 	
-	wg.Add(50000)
-	for i := 1; i <= 50000; i++ {
+	wg.Add(5)
+	for i := 1; i <= 5; i++ {
 		go func() {
 			defer wg.Done()
 			rwmutex.RLock()
-			utils.ReadFileOfString(path+file)
+			s, _ := utils.ReadFileOfString(path+file)
+			fmt.Println("ReadFileOfString: ", s)
 			rwmutex.RUnlock()
 		}()
 	}
 	
-	wg.Add(5000)
-	for i := 1; i <= 5000; i++ {
+	wg.Add(5)
+	for i := 1; i <= 5; i++ {
 		go func() {
 			defer wg.Done()
 			rwmutex.Lock()
-			utils.WrtiteFile(path, file, data)
+			bool, err := utils.WrtiteFile(path, file, data)
+			if bool == false || err != nil {
+				fmt.Println("WrtiteFile err.", bool, err)
+			}
+			fmt.Println("WrtiteFile successfuly")
 			rwmutex.Unlock()
 		}()
 	}
