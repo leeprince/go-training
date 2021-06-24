@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5模拟微信聊天界面</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.min.js" charset="utf-8"></script>
+    <script src="js/bootstrap.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id="container">
+    <div class="header">
+        <span style="float: left;">微信聊天界面</span>
+        <span style="float: right;">14:21</span>
+    </div>
+    <ul class="content">
+    </ul>
+    <div class="footer">
+        <div id="user_face_icon">
+            <img src="img/sendHead.jpg" alt="">
+        </div>
+        <input id="text" type="text" placeholder="说点什么吧...">
+        <span id="btnSend">发送</span>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var webSocketHost = "ws://127.0.0.1:8500/"
+    var arrIcon = ['img/sendHead.jpg', 'img/receviceHead.jpg'];
+    var num = 0;     //控制头像改变
+    var iNow = -1;    //用来累加改变左右浮动
+    var text = document.getElementById('text');
+    var content = document.getElementsByTagName('ul')[0];
+    var img = content.getElementsByTagName('img');
+    var span = content.getElementsByTagName('span');
+    $(function () {
+        $("#btnSend").on( "click", function(){
+            if (text.value == '') {
+                alert('不能发送空消息');
+            } else {
+                content.innerHTML += '<li><img src="' + arrIcon[0] + '"><span>' + text.value + '</span></li>';
+                iNow++;
+                if (num == 0) {
+                    img[iNow].className += 'imgright';
+                    span[iNow].className += 'spanright';
+                } else {
+                    img[iNow].className += 'imgleft';
+                    span[iNow].className += 'spanleft';
+                }
+
+                webSocket.send(`{"method":"chat","msg":"${text.value}"}`);
+                text.value = '';
+
+                // 内容过多时,将滚动条放置到最底端
+                content.scrollTop = content.scrollHeight;
+            }
+        })
+
+
+        var webSocket = new WebSocket(webSocketHost);
+
+        webSocket.onerror = function (event) {
+            console.log("error" + event.data);
+        };
+
+        // 打开websocket
+        webSocket.onopen = function (event) {
+            console.log("open:" + sockState());
+        };
+
+        //监听消息
+        webSocket.onmessage = function (event) {
+            console.log("onMessage");
+            // var data = eval('(' + event.data + ')');
+            var data = event.data
+            content.innerHTML += '<li><img src="' + arrIcon[1] + '"><span>' + data + '</span></li>';
+            iNow++;
+            img[iNow].className += 'imgleft';
+            span[iNow].className += 'imgleft';
+            text.value = '';
+            // 内容过多时,将滚动条放置到最底端
+            content.scrollTop = content.scrollHeight;
+        };
+
+        webSocket.onclose = function (event) {
+            document.getElementById("message").innerHTML = "<p>close</p>";
+            console.log("close:" + sockState());
+            webSocket.close();
+        }
+
+        function sockState() {
+            var status = ['未连接', '连接成功，可通讯', '正在关闭', '连接已关闭或无法打开'];
+            return status[webSocket.readyState];
+        }
+
+        // 实时显示时间
+        startTime()
+    });
+
+    function startTime() {
+        var today = new Date();
+        var y = today.getFullYear();
+        var M = today.getMonth() + 1;
+        var d = today.getDate();
+        var w = today.getDay();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        var week = ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        // add a zero in front of numbers<10
+        m = checkTime(m);
+        s = checkTime(s);
+        $("#container .header span:eq(1)").html(h + ':' + m + ':' + s + ' ' + y + '年' + M + '月' + d + "日 " + week[w]);//可改变格式
+        t = setTimeout(startTime, 500);
+    }
+
+    function checkTime(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+</script>

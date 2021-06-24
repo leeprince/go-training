@@ -1,0 +1,1 @@
+> go get golang.org/x/net/websocket 之后通过 go mod vendor 生成项目vendor/文件呢
