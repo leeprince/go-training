@@ -1,8 +1,12 @@
 package main
 
-import "base-syntax/unit"
+import (
+	"base-syntax/hello"
+	"base-syntax/unit"
+)
 
 func main()  {
+	hello.TestHello()
 
 	// unit.Pointer()
 	// unit.Error()
@@ -16,6 +20,8 @@ func main()  {
 	// unit.Slice()
 	unit.Map()
 	// unit.Interface()
+	
+	
 }
 
 
